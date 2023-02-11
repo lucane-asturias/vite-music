@@ -144,7 +144,7 @@
 
     	const getComments = async () => {
     		// retrieve id of the song based on the segment param
-    		const snapshots = await commentsCollection.where('songID', '==',route.params.id).get()
+    		const snapshots = await commentsCollection.where('songID', '==', route.params.id).get()
 
     		comments.value = []
 

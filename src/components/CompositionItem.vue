@@ -16,7 +16,7 @@
         :class="alert-color">
         {{ alert_message }}
       </div>
-      <vee-form :validation-schema="schema" :initial-values="song" @submit="edit">
+      <vee-form :validation-schema="schema" :initial-values="song" @submit="onEdit">
         <div class="mb-3">
           <label class="inline-block mb-2">Song Title</label>
           <vee-field type="text" name="modified_name"
@@ -47,25 +47,21 @@
   </div>
 </template>
 
-<script>
-import { songsCollection, storage } from '@/includes/firebase';
+<script setup>
+  import { songsCollection, storage } from '@/includes/firebase'
+  import { ref, reactive } from 'vue'
 
-export default {
-  name: 'CompositionItem',
-  data() {
-    return {
-      showForm: false,
-      schema: {
-        modified_name: 'required',
-        genre: 'alpha_spaces',
-      },
-      in_submission: false,
-      show_alert: false,
-      alert_color: 'bg-blue-500',
-      alert_message: 'Please wait! Updating song info.',
-    };
-  },
-  props: {
+  const showForm = ref(false)
+  const schema = ref({
+    modified_name: 'required',
+    genre: 'alpha_spaces',
+  })
+  const inSubmission = ref(false)
+  const show_alert = ref(false)
+  const alert_color = 'bg-blue-500',
+  const alert_message = 'Please wait! Updating song info.',
+    
+  const props = defineProps({
     song: {
       type: Object,
       required: true,
@@ -85,46 +81,45 @@ export default {
     updateUnsavedFlag: {
       type: Function,
     }
-  },
-  methods: {
-    async edit(values) { // vee-validate will pass the field values as an argument
-      this.in_submission = true;
-      this.show_alert = true;
-      this.alert_color = 'bg-blue-500';
-      this.alert_message = 'Please wait! Updating song info.';
+  })
 
-      try {
-        // doc function allows to select a document by its id
-        await songsCollection.doc(this.song.docID).update(values);
-      } catch(error) {
-        this.in_submission = false; // re-enable the form submission 
-        this.alert_color = 'bg-red-500';
-        this.alert_message = 'Something went wrong. Try again later.';
-        return;
-      }
+  const onEdit = async (values) => { // vee-validate will pass the field values as an argument
+    inSubmission.value = true
+    show_alert.value = true
+    alert_color = 'bg-blue-500'
+    alert_message = 'Please wait! Updating song info.'
 
-      // update song array in manage component
-      this.updateSong(this.index, values);
-      // passing false to indicate the user does not have any unsaved changes
-      this.updateUnsavedFlag(false);
-
-      this.in_submission = false;
-      this.alert_color = 'bg-blue-500';
-      this.alert_message = 'Success!';
-    },
-    async deleteSong() {
-      //delete song either in storage and database document
-      const storageRef = storage.ref();
-      // a relative child path to delete the file
-      const songRef = storageRef.child(`songs/${this.song.original_name}`);
-
-      await songRef.delete();
-
-      // delete data from the collection
-      await songsCollection.doc(this.song.docID).delete();
-
-      this.removeSong(this.index);
+    try {
+      // doc function allows to select a document by its id
+      await songsCollection.doc(props.song.docID).update(values)
+    } catch(error) {
+      inSubmission.value = false // re-enable the form submission 
+      alert_color = 'bg-red-500'
+      alert_message = 'Something went wrong. Try again later.'
+      return
     }
-  },
-}
+
+    // update song array in manage component
+    props.updateSong(props.index, values)
+    // passing false to indicate the user does not have any unsaved changes
+    props.updateUnsavedFlag(false)
+
+    inSubmission.value = false
+    alert_color = 'bg-blue-500'
+    alert_message = 'Success!'
+  }
+  
+  const deleteSong = async () => {
+    //delete song either in storage and database document
+    const storageRef = storage.ref()
+    // a relative child path to delete the file
+    const songRef = storageRef.child(`songs/${props.song.original_name}`)
+
+    await songRef.delete()
+
+    // delete data from the collection
+    await songsCollection.doc(props.song.docID).delete()
+
+    props.removeSong(props.index)
+  }
 </script>

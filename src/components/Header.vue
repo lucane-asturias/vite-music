@@ -64,7 +64,7 @@
 
   const isUserLoggedIn = computed(() => authStore.userLoggedIn)
     
-  const toggleAuthModal = () => authStore.toggleAuth()
+  const toggleAuthModal = () => authStore.toggleAuthModal()
 
   const signOutUser = () => {
     authStore.signOut()

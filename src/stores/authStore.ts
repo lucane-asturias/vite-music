@@ -7,11 +7,11 @@ export const useAuthStore = defineStore('authStore', {
     userLoggedIn: false,
   }),
   actions: {
-    toggleAuthModal: (state) => {
-      state.authModalShow = !state.authModalShow
+    toggleAuthModal() {
+      this.authModalShow = !this.authModalShow
     },
-    toggleAuth(state) {
-      state.userLoggedIn = !state.userLoggedIn
+    toggleAuth() {
+      this.userLoggedIn = !this.userLoggedIn
     },
     // register user in both the authentication and firestore services
     async registerUser(payload) {
@@ -38,18 +38,15 @@ export const useAuthStore = defineStore('authStore', {
       
       this.toggleAuth()
     },
-    // init_login({ commit }) {
-    //   const user = auth.currentUser; // get the curent user connected 
-
-    //   if (user) {
-    //     commit('toggleAuth');
-    //   }
-    // },
+    initLogin() {
+      const user = auth.currentUser; // get the curent user connected 
+      if (user) this.toggleAuth()
+    },
     async signOut() {
       // signing user out from firebase
       await auth.signOut()
 
-      commit('toggleAuth')
+      this.toggleAuth()
     }
   }
 })

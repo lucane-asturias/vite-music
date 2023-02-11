@@ -17,14 +17,17 @@
 </template>
 
 <script setup>
+  import { onMounted } from 'vue'
   import AppHeader from '@/components/Header.vue'
   import AuthModal from '@/components/Auth.vue'
   // import AppPlayer from '@/components/Player.vue'
+  import { useAuthStore } from '@/stores/authStore'
+
+  const authStore = useAuthStore()
 
   // life-cycle method for when the component is created
-  // created() {
-  //   this.$store.dispatch('init_login')
-  // }
+  onMounted(() => authStore.initLogin())
+  
 </script>
 
 <style>
