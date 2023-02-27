@@ -43,67 +43,69 @@
 </template>
 
 <script setup>
-  // import { ref, onMounted, onBeforeUnmount } from 'vue'
-  // // import { songsCollection } from '@/includes/firebase';
-  // import SongItem from '@/components/SongItem.vue';
+  import { ref, onMounted, onBeforeUnmount } from 'vue'
+  import { songsCollection } from '@/includes/firebase'
+  import SongItem from '@/components/SongItem.vue'
 
-  // const songs = ref([])
-  // const maxPerPage = ref(3)
-  // const pendingRequest = ref(false)
+  const maxPerPage = 3
+  const songs = ref([])
+  const pendingRequest = ref(false)
   
-  // const handleScroll = () => {
-  //   // check the current scroll position of the page
-  //   const { scrollTop, offsetHeight } = document.documentElement;
-  //   const { innerHeight } = window;
-  //   // check if the sum of scrollTop and innerHeight properties are equal to the offsetHeight
-  //   const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight;
+  const handleScroll = () => {
+    // check the current scroll position of the page
+    const { scrollTop, offsetHeight } = document.documentElement
+    const { innerHeight } = window
+    // check if the sum of scrollTop and innerHeight properties are equal to the offsetHeight
+    // const bottomOfWindow = Math.round(scrollTop) + innerHeight === offsetHeight
+    // alternative optional solution (less strict):
+    const bottomOfWindow = Math.round(scrollTop) + innerHeight > offsetHeight - 100
 
-  //   // detect if its in the bottom of the page to get more songs
-  //   if (bottomOfWindow) this.getSongs()
-  // }
+    // detect if its at the bottom of the page to get more songs
+    if (bottomOfWindow) this.getSongs()
+  }
 
-  // const getSongs = async () => {
-  //   // stop further requests from running
-  //   if (pendingRequest.value) return
+  const getSongs = async () => {
+    // stop further requests from running
+    if (pendingRequest.value) return
 
-  //   pendingRequest.value = true
-  //   let snapshots
+    pendingRequest.value = true
+    let snapshots
 
-  //   if (songs.value.length) { // if there's data
-  //     // query last doc in the songsCollection by passing the id of the last object in the songs array
-  //     const lastDoc = await songsCollection.doc(songs.value[songs.value.length - 1].docID).get()
-  //     // retrieve all the documents in the song collection (limited by the first three results)
-  //     snapshots = await songsCollection
-  //       .orderBy('modified_name')
-  //       .startAfter(lastDoc) // start the query after the last set of documents
-  //       .limit(maxPerPage.value)
-  //       .get() 
-  //   } else {
-  //     // initial request: get the first 3 songs
-  //     snapshots = await songsCollection
-  //       .orderBy('modified_name')
-  //       .limit(maxPerPage.value)
-  //       .get()
-  //   }
+    if (songs.value.length) { // if there's data
+      // query last doc in the songsCollection by passing the id of the last object in the songs array
+      const lastDoc = await songsCollection.doc(songs.value[songs.value.length - 1].docID).get()
+      // retrieve the documents in the songs collection (limited by the first three results)
+      snapshots = await songsCollection
+        .orderBy('modified_name')
+        .startAfter(lastDoc) // start the query after the last set of documents
+        .limit(maxPerPage)
+        .get()
+    } else {
+      // initial request: get the first 3 songs
+      snapshots = await songsCollection
+        .orderBy('modified_name')
+        .limit(maxPerPage)
+        .get()
+    }
 
-  //   snapshots.forEach((document) => {
-  //     this.songs.push({
-  //       docID: document.id,
-  //       ...document.data(),
-  //     })
-  //   })
+    snapshots.forEach((document) => {
+      songs.value.push({
+        docID: document.id,
+        ...document.data(),
+      })
+    })
 
-  //   pendingRequest.value = false
-  // }
+    pendingRequest.value = false
+  }
 
-  // onMounted(() => {
-  //   this.getSongs()
+  onMounted(() => {
+    getSongs()
 
-  //   window.addEventListener('scroll', this.handleScroll)
-  // })
+    window.addEventListener('scroll', handleScroll())
+  })
 
-  // onBeforeUnmount(() => {
-  //   window.removeEventListener('scroll', this.handleScroll)
-  // })
+  onBeforeUnmount(() => {
+    window.removeEventListener('scroll', handleScroll())
+  })
 
 </script>
