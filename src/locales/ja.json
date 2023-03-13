@@ -43,5 +43,11 @@
   },
   "upload": {
     "drop_files": "MP3音楽をここにドラッグしてください"
+  },
+  "composition_item": {
+    "song_title": "曲名",
+    "genre": "ジャンル",
+    "submit": "提出する",
+    "go_back": "戻る"
   }
 }

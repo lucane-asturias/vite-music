@@ -34,7 +34,7 @@
         </div>
         <!-- Playlist -->
         <ol id="playlist">
-          <!-- <song-item v-for="song in songs" :key="song.docID" :song="song" /> -->
+          <song-item v-for="song in songs" :key="song.docID" :song="song" />
         </ol>
         <!-- .. end Playlist -->
       </div>
@@ -61,7 +61,7 @@
     const bottomOfWindow = Math.round(scrollTop) + innerHeight > offsetHeight - 100
 
     // detect if its at the bottom of the page to get more songs
-    if (bottomOfWindow) this.getSongs()
+    if (bottomOfWindow) getSongs()
   }
 
   const getSongs = async () => {

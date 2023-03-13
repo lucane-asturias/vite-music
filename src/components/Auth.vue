@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { useAuthStore } from '@/stores/authStore'
 
   import LoginForm from './LoginForm.vue'
@@ -64,7 +64,7 @@
 
   const authStore = useAuthStore()
 
-  const tab = 'login'
+  const tab = ref('login')
   
   const authModalShow = computed(() => authStore.authModalShow)
 

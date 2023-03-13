@@ -43,5 +43,11 @@
   },
   "upload": {
     "drop_files": "Drop your files here"
+  },
+  "composition_item": {
+    "song_title": "Song Title",
+    "genre": "Genre",
+    "submit": "Submit",
+    "go_back": "Go Back"
   }
 }

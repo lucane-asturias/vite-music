@@ -45,7 +45,7 @@
   import { ref, onBeforeUnmount } from 'vue'
 
   const isDragover = ref(false)
-  const uploads = []
+  const uploads = ref([])
 
   const props = defineProps(['addSong'])
 
@@ -61,7 +61,7 @@
       if (file.type !== 'audio/mpeg') return // end the current iteration
 
       if (!navigator.onLine) { // if user is not online, they can't upload files
-        this.uploads.push({
+        uploads.value.push({
           task: {},
           current_progress: 100,
           name: file.name,

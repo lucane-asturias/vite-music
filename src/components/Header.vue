@@ -1,9 +1,8 @@
 <template>
-  <!-- Header -->
   <header id="header" class="bg-gray-700">
     <nav class="container mx-auto flex justify-start items-center py-5 px-4">
       <!-- App Name -->
-      <router-link class="text-white font-bold uppercase text-2xl mr-4" 
+      <router-link class="text-white font-bold uppercase text-xl lg:text-2xl mr-4" 
         :to="{ name: 'home' }" exact-active-class="no-active">
         {{ $t('header.music') }}
       </router-link>
@@ -30,15 +29,17 @@
             </li>
           </template>
           <li>
-            <router-link class="px-2 text-white" :to="{ name: 'about' }">
+            <router-link class="px-2 text-white invisible lg:visible" :to="{ name: 'about' }">
               {{ $t('header.about') }}
             </router-link>
           </li>
         </ul>
         <ul class="flex flex-row mt-1 ml-auto">
-          <select class="appearance-none ml-auto w-full bg-gray-200 border border-gray-200 
-            text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white
-            focus:border-gray-500" @click.prevent="changeLocale">
+          <select @click.prevent="changeLocale"
+            class="appearance-none ml-auto w-full h-full bg-gray-200 border border-gray-200 text-gray-700 
+              py-3 px-4 pr-4 lg:pr-1 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500
+              text-base font-normal lg:font-semibold tracking-normal lg:tracking-widest" 
+          >
             <option value="en">English</option>
             <option value="pt">Portuguese</option>
             <option value="ja">Japanese</option>

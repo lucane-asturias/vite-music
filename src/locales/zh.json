@@ -43,5 +43,11 @@
   },
   "upload": {
     "drop_files": "拖动你的MP3音乐到这里"
+  },
+  "composition_item": {
+    "song_title": "歌名",
+    "genre": "类型",
+    "submit": "提交",
+    "go_back": "回去"
   }
 }

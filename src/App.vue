@@ -10,7 +10,7 @@
     </transition>
   </router-view>
 
-  <!-- <app-player /> -->
+  <app-player />
 
   <auth-modal />
 
@@ -20,12 +20,11 @@
   import { onMounted } from 'vue'
   import AppHeader from '@/components/Header.vue'
   import AuthModal from '@/components/Auth.vue'
-  // import AppPlayer from '@/components/Player.vue'
+  import AppPlayer from '@/components/Player.vue'
   import { useAuthStore } from '@/stores/authStore'
 
   const authStore = useAuthStore()
 
-  // life-cycle method for when the component is created
   onMounted(() => authStore.initLogin())
   
 </script>

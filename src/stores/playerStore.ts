@@ -1,90 +1,84 @@
-import { Howl } from 'howler'; // use to create a new audio object
-import helper from '@/includes/helper';
+import { defineStore } from 'pinia'
+import { Howl } from 'howler' // use to create a new audio object
+import helper from '@/includes/helper'
 
-export default {
-  state: {
+export const usePlayerStore = defineStore('playerStore', {
+  state: () => ({
     currentSong: {},
     song: {},
-    seek: '00:00', // current position
+    seek: '00:00', // = current position
     duration: '00:00',
     playerProgress: '0%',
-  },
-  getters: {
-    playing: (state) => {
-      if (state.song.playing) {
-        return state.song.playing();
-      }
+  }),
+  actions: {
+    async newSong(payload) {
+      // Pause the current song, delete the instance and circuvent memory leaking issues
+      if (this.song instanceof Howl) this.song.unload()
 
-      return false;
-    },
-  },
-  mutations: {
-    newSong(state, payload) {
-      state.currentSong = payload;
-      state.song = new Howl({
+      this.currentSong = payload
+      this.song = new Howl({
         src: [payload.url], // src of audio files to play
         html5: true,
-      });
-    },
-    updatePosition(state) {
-      // seek fc will return the current position of the audio being played
-      state.seek = helper.formatTime(state.song.seek());
-      state.duration = helper.formatTime(state.song.duration())
-      state.playerProgress = `${(state.song.seek() / state.song.duration()) * 100}%`;
-    },
-  },
-  actions: {
-    async newSong({ state, commit, dispatch }, payload) {
-      if (state.song instanceof Howl) {
-        // circunvent memory leaking issues
-        state.song.unload(); // pause the current song, delete the instance
-      }
+      })
 
-      commit('newSong', payload);
+      this.song.play()
 
-      state.song.play();
-
-      state.song.on('play', () => {
-        requestAnimationFrame(() => {
-          dispatch('progress');
-        });
-      });
+      // event emitted when audio is playing
+      this.song.on('play', () => {
+        requestAnimationFrame(() => this.progress)
+      })
     },
-    async toggleAudio({ state }) {
-      if (!state.song.playing) { // if the function not exists on the object
-        return;
-      }
-      // if it is playing, pause the audio
-      if (state.song.playing()) { 
-        state.song.pause();
-      } else {
-        state.song.play();
-      }
-    },
-    progress({ commit, state, dispatch }) {
-      commit('updatePosition')
+    progress() {
+      this.updatePosition()
 
       if (state.song.playing()) {
-        requestAnimationFrame(() => {
-          dispatch('progress');
-        });
+        // recursive until the audio gets paused or ends
+        requestAnimationFrame(() => this.progress)
       }
     },
-    updateSeek({ state, dispatch }, payload) {
-      if (!state.song.playing) {
-        return;
-      }
-
-      const { x, width } = payload.currentTarget.getBoundingClientRect();
-      const clickX = payload.clientX - x; // calculation to get the correct coordenate clicked
-      const percentage = clickX / width;
-      const seconds = state.song.duration() * percentage;
-
-      state.song.seek(seconds); // update current position of the audio
-
-      state.song.once('seek', () => {
-        dispatch('progress'); // update player
-      });
+    updatePosition() {
+      // the current position of the audio being played
+      this.seek = helper.formatTime(this.song.seek())
+      // full duration of the audio
+      this.duration = helper.formatTime(this.song.duration())
+      this.playerProgress = `${
+        (this.song.seek() / this.song.duration()) * 100
+      }%`
     },
+    updateSeek(event) {
+      if (!this.song.playing) return
+      console.log('clientX > ', event.clientX)
+
+      // --Document = 2000, -Timeline = 1000, --clientX = 1000, -Distance = 500
+      const { x, width } = event.currentTarget.getBoundingClientRect() // information about the current element
+      console.log(x, '< x, ', width, '< width')
+      // relative to the docment - relative to the element
+      const clickX = event.clientX - x // calculation to get the actual coordinate clicked
+
+      const percentage = clickX / width // coordinate / width of the player
+      const seconds = this.song.duration() * percentage
+
+      this.song.seek(seconds) // update current position of the audio
+
+      this.song.on('seek', () => this.progress) // update player (timeline)
+    },
+    toggleAudio() {
+       // if the function not exists on the object
+      if (!this.song.playing) return
+
+      // if it is playing, pause the audio
+      if (this.song.playing()) { 
+        this.song.pause()
+      } else {
+        this.song.play()
+      }
+    },
+  },
+  getters: {
+    isPlaying: (state) => {
+      if (state.song.playing) return state.song.playing()
+
+      return false
+    }    
   }
-};
+})

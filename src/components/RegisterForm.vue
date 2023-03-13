@@ -72,7 +72,7 @@
     <div class="mb-3 pl-6">
       <vee-field type="checkbox" name="tos" value="1" :validateOnInput="true"
         class="w-4 h-4 float-left -ml-6 mt-1 rounded" />
-      <i18n-t class="inline-block" keypath="register.accept" tag="label">
+      <i18n-t class="inline-block" keypath="register.accept" tag="label" scope="global">
         <a href="#">{{ $t('register.TOS') }}</a>
       </i18n-t>
       <ErrorMessage class="text-red-600 block" name="tos" />
@@ -107,53 +107,53 @@
 
   const reg_in_submission = ref(false) // keep track if registration form is in submisson
   const reg_show_alert = ref(false) // toggle visiblity of alert box
-  let reg_alert_color = 'bg-blue-500' // indicate the form submission is in progress
-  let reg_alert_msg = 'Please wait! Your account is being created.' // message of alert box
+  let reg_alert_color = ref('bg-blue-500') // indicate the form submission is in progress
+  let reg_alert_msg = ref('Please wait! Your account is being created.') // message of alert box
 
   const onRegister = async (values) => {
     reg_show_alert.value = true // turn alert visibility on
     reg_in_submission.value = true // disable form button
-    reg_alert_color = 'bg-blue-500'
+    reg_alert_color.value = 'bg-blue-500'
 
     if (locale.value === 'pt') {
-      reg_alert_msg = 'Aguarde! Sua conta está sendo criada.'
+      reg_alert_msg.value = 'Aguarde! Sua conta está sendo criada.'
     } else if (locale.value === 'zh') {
-      reg_alert_msg = '请等待! 您的账户正在创建中。'
+      reg_alert_msg.value = '请等待! 您的账户正在创建中。'
     } else if (locale.value === 'ja') {
-      reg_alert_msg = 'しばらくお待ちください お客様のアカウントを作成中です。'
+      reg_alert_msg.value = 'しばらくお待ちください お客様のアカウントを作成中です。'
     } else {
-      reg_alert_msg = 'Please wait! Your account is being created.'
+      reg_alert_msg.value = 'Please wait! Your account is being created.'
     }
 
     try {
       await authStore.registerUser(values)
     } catch (error) {
-      reg_in_submission.value = false
-      reg_alert_color = 'bg-red-500'
+      reg_in_submission.value = true
+      reg_alert_color.value = 'bg-red-500'
 
       if (locale.value === 'pt') {
-        reg_alert_msg = 'Foi gerado um erro inesperado. Tente novamente.'
+        reg_alert_msg.value = 'Foi gerado um erro inesperado. Tente novamente.'
       } else if (locale.value === 'zh') {
-        reg_alert_msg = '一个意料之外的问题发生了。 请稍后再试。'
+        reg_alert_msg.value = '一个意料之外的问题发生了。 请稍后再试。'
       } else if (locale.value === 'ja') {
-        reg_alert_msg = '予期せぬエラーが発生しました。後でもう一度お試しください。'
+        reg_alert_msg.value = '予期せぬエラーが発生しました。後でもう一度お試しください。'
       } else {
-        reg_alert_msg = 'An unexpected error ocurred. Please try again later.'
+        reg_alert_msg.value = 'An unexpected error ocurred. Please try again later.'
       }
 
       return // stop the function from executing further
     }
 
-    reg_alert_color = 'bg-green-500'
+    reg_alert_color.value = 'bg-green-500'
 
     if (locale.value === 'pt') {
-      reg_alert_msg = 'Sucesso! Sua conta foi criada.'
+      reg_alert_msg.value = 'Sucesso! Sua conta foi criada.'
     } else if (locale.value === 'zh') {
-      reg_alert_msg = '成功！ 您的帐号已经建立。'
+      reg_alert_msg.value = '成功！ 您的帐号已经建立。'
     } else if (locale.value === 'ja') {
-      reg_alert_msg = '成功! お客様のアカウントが作成されました。'
+      reg_alert_msg.value = '成功! お客様のアカウントが作成されました。'
     } else {
-      reg_alert_msg = 'Success! Your account has been created.'
+      reg_alert_msg.value = 'Success! Your account has been created.'
     }
 
     // window.location.reload()

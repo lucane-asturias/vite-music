@@ -10,11 +10,11 @@
         </button>
       </div>
       <!-- Current Position -->
-      <div class="float-left w-7 h-7 leading-3 text-gray-400 mt-0 text-lg w-14 ml-5 mt-1">
+      <div class="float-left w-7 h-7 leading-3 text-gray-400 mt-0 text-lg w-14 ml-5 mt-2">
         <span class="player-currenttime">{{ seek }}</span>
       </div>
       <!-- Scrub -->
-      <div class="float-left w-7 h-7 leading-3 ml-7 mt-2 player-scrub">
+      <div class="float-left w-7 h-7 leading-3 ml-7 mt-1 player-scrub">
         <div class="absolute left-0 right-0 text-lg text-center mx-auto player-song-info"
           v-if="currentSong.modified_name">
           <span class="song-title">{{ currentSong.modified_name }}</span>
@@ -22,7 +22,7 @@
         </div>
         <!-- Scrub Container  -->
         <span class="block w-full h-2 rounded m-1 mt-2 bg-gray-200 relative cursor-pointer"
-          @click.prevent="updateSeek">
+          @click.prevent="updateSeek($event)">
           <!-- Player Ball -->
           <span class="absolute top-neg-9 text-gray-800 text-lg" 
             :style="{ left: playerProgress }">
@@ -34,30 +34,33 @@
         </span>
       </div>
       <!-- Duration -->
-      <div class="float-left w-7 h-7 leading-3 text-gray-400 mt-0 text-lg w-14 ml-8 mt-1">
+      <div class="float-left w-7 h-7 leading-3 text-gray-400 mt-2 text-lg w-14 ml-8 mt-1">
         <span class="player-duration">{{ duration }}</span>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-/* import { mapActions, mapGetters, mapState } from 'vuex';
+<script setup>
+  import { computed } from 'vue'
+  import { storeToRefs } from 'pinia'
+  import { usePlayerStore } from '@/stores/playerStore'
 
-export default {
-  name: 'Player',
-  computed: {
-    ...mapGetters(['playing']),
-    // ...mapState(['seek', 'duration', 'playerProgress', 'currentSong']),
-    ...mapState({
-      seek: (state) => state.player.seek,
-      duration: (state) => state.player.duration,
-      playerProgress: (state) => state.player.playerProgress,
-      currentSong: (state) => state.player.currentSong,
-    }),
-  },
-  methods: {
-    ...mapActions(['toggleAudio', 'updateSeek']),
+  const playerStore = usePlayerStore()
+
+  // destructuring while keeping reactivity
+  const { 
+    playing, 
+    seek, 
+    duration, 
+    playerProgress, 
+    currentSong 
+  } = storeToRefs(playerStore)
+
+  const toggleAudio = () => playerStore.toggleAudio()
+  const updateSeek = (event) => { 
+    console.log(event)
+    playerStore.updateSeek(event) 
   }
-} */
+
 </script>

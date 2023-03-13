@@ -42,6 +42,12 @@
     "title": "Título da Música:"
   },
   "upload": {
-    "drop_files": "Arraste suas músicas em mp3 aqui"
+    "drop_files": "Arraste suas músicas aqui"
+  },
+  "composition_item": {
+    "song_title": "Título da Música",
+    "genre": "Gênero",
+    "submit": "Enviar",
+    "go_back": "Voltar"
   }
 }

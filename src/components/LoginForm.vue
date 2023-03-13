@@ -45,53 +45,53 @@
 
   const login_in_submission = ref(false) // keep track if login form is in submisson (prevent excessive request)
   const login_show_alert = ref(false) // toggle visiblity of alert box
-  let login_alert_color = 'bg-blue-500' // indicate the form submission is in progress
-  let login_alert_msg = 'Please wait! We are logging you in.' // message of alert box
+  let login_alert_color = ref('bg-blue-500') // indicate the form submission is in progress
+  let login_alert_msg = ref('Please wait! We are logging you in.') // message of alert box
 
   const onLogin = async (values) => {
     login_show_alert.value = true // active alert visibility
     login_in_submission.value = true // disable form button
-    login_alert_color = 'bg-blue-500'
+    login_alert_color.value = 'bg-blue-500'
 
     if (locale.value === 'pt') {
-      login_alert_msg = 'Espere, por favor. Estamos lhe conectando.'
+      login_alert_msg.value = 'Espere, por favor. Estamos lhe conectando.'
     } else if (locale.value === 'zh') {
-      login_alert_msg = '请稍候! 我们正在为您登录。'
+      login_alert_msg.value = '请稍候! 我们正在为您登录。'
     } else if (locale.value === 'ja') {
-      login_alert_msg = 'お待ちください。 ログインしています。'
+      login_alert_msg.value = 'お待ちください。 ログインしています。'
     } else {
-      login_alert_msg = 'Please wait! We are logging you in.'
+      login_alert_msg.value = 'Please wait! We are logging you in.'
     }
 
     try {
       await authStore.loginUser(values)
     } catch (error) {
-      login_in_submission.value = false // disable form button
-      login_alert_color = 'bg-red-500'
+      login_in_submission.value = true // disable form button
+      login_alert_color.value = 'bg-red-500'
 
       if (locale.value === 'pt') {
-        login_alert_msg = 'Dados de login inválidos.'
+        login_alert_msg.value = 'Dados de login inválidos.'
       } else if (locale.value === 'zh') {
-        login_alert_msg = '无效的登录信息。'
+        login_alert_msg.value = '无效的登录信息。'
       } else if (locale.value === 'ja') {
-        login_alert_msg = 'ログイン情報が無効です。'
+        login_alert_msg.value = 'ログイン情報が無効です。'
       } else {
-        login_alert_msg = 'Invalid login details.'
+        login_alert_msg.value = 'Invalid login details.'
       }
 
       return // prevent to run further
     }
 
-    login_alert_color = 'bg-green-500'
+    login_alert_color.value = 'bg-green-500'
 
     if (locale.value === 'pt') {
-      login_alert_msg = 'Sucesso! Você está logado agora.'
+      login_alert_msg.value = 'Sucesso! Você está logado agora.'
     } else if (locale.value === 'zh') {
-      login_alert_msg = '成功！ 你现在已经登录了。'
+      login_alert_msg.value = '成功！ 你现在已经登录了。'
     } else if (locale.value === 'ja') {
-      login_alert_msg = '成功！ あなたはログインしています。'
+      login_alert_msg.value = '成功！ あなたはログインしています。'
     } else {
-      login_alert_msg = 'Success! You are now logged in.'
+      login_alert_msg.value = 'Success! You are now logged in.'
     }
     
     // window.location.reload()
