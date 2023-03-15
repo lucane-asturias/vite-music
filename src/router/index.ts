@@ -1,15 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router';
-// import Home from '@/views/Home.vue';
-// import About from '@/views/About.vue';
-// import Manage from '@/views/Manage.vue';
-// import Song from '@/components/Song.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+// import Home from '@/views/Home.vue'
+// import About from '@/views/About.vue'
+// import Manage from '@/views/Manage.vue'
+// import Song from '@/components/Song.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 // dynamically load component when its needed, which will proceed to load the chunk file
-const Home = () => import('@/views/Home.vue');
-const About = () => import('@/views/About.vue');
-const Manage = () => import(/* webpackChunkName: 'groupedChunk' */'@/views/Manage.vue'); 
-const Song = () => import(/* webpackChunkName: 'groupedChunk' */'@/components/Song.vue'); 
+const Home = () => import('@/views/Home.vue')
+const About = () => import('@/views/About.vue')
+const Manage = () => import(/* webpackChunkName: 'groupedChunk' */'@/views/Manage.vue') 
+const Song = () => import(/* webpackChunkName: 'groupedChunk' */'@/components/Song.vue') 
 
 const routes = [
   {
@@ -31,6 +31,10 @@ const routes = [
     // alias: '/manage', // additional path
     name: 'manage',
     component: Manage,
+    // beforeEnter(to, from, next) {
+    //   console.log("Manage Route Guard");
+    //   next();
+    // },
     meta: {
       // weather a route requires authentication
       requiresAuth: true,
@@ -49,29 +53,29 @@ const routes = [
     path: '/:catchAll(.*)*',
     redirect: { name: 'home' },
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
   linkExactActiveClass: 'text-yellow-500',
-});
+})
 
-// Navigation guard to check every request before responding
+// Navigation guard: check every request before responding
 router.beforeEach((to, from, next) => {
-  // check if the current route (not) requires authentication by using some function
-  if (!to.matched.some((record) => record.meta.requiresAuth)) {
-    next();
-    return; // end the function
+  // check if the current route do not requires authentication
+  if (!to.meta.requiresAuth) {
+    next()
+    return
   }
 
   const authStore = useAuthStore()
 
   if (authStore.userLoggedIn) {
-    next();
+    next()
   } else {
-    next({ name: 'home' });
+    next({ name: 'home' })
   }
 })
 
-export default router;
+export default router

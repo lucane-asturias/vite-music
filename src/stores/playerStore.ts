@@ -11,13 +11,13 @@ export const usePlayerStore = defineStore('playerStore', {
     playerProgress: '0%',
   }),
   actions: {
-    async newSong(payload) {
+    async newSong(songPayload) {
       // Pause the current song, delete the instance and circuvent memory leaking issues
       if (this.song instanceof Howl) this.song.unload()
 
-      this.currentSong = payload
+      this.currentSong = songPayload
       this.song = new Howl({
-        src: [payload.url], // src of audio files to play
+        src: [songPayload.url], // src of audio files to play
         html5: true,
       })
 
@@ -25,15 +25,15 @@ export const usePlayerStore = defineStore('playerStore', {
 
       // event emitted when audio is playing
       this.song.on('play', () => {
-        requestAnimationFrame(() => this.progress)
+        requestAnimationFrame(this.progress)
       })
     },
     progress() {
       this.updatePosition()
 
-      if (state.song.playing()) {
+      if (this.song.playing()) {
         // recursive until the audio gets paused or ends
-        requestAnimationFrame(() => this.progress)
+        requestAnimationFrame(this.progress)
       }
     },
     updatePosition() {

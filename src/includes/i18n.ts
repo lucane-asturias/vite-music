@@ -18,6 +18,9 @@ export default createI18n({
     en: {
       currency: { style: 'currency', currency: 'USD' },
     },
+    pt: {
+      currency: { style: 'currency', currency: 'BRL' },
+    },
     ja: {
       currency: { style: 'currency', currency: 'JPY' },
     },

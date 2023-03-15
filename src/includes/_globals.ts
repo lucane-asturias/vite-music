@@ -1,23 +1,27 @@
-import _ from 'lodash';
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
 
-export default { // export vue plugin under default namespace
+export default { 
   install(app) {
-    const baseComponents = require.context(
-      // directory where Webpack should begin its search + not search in subdirectory + file name 
-      '../components/base/', false, /[A-Za-z0-9-_,\s]+\.vue$/i
-    );
-    // keys return an array of files based on the arguments passed into the required.context function
-    baseComponents.keys().forEach((fileName) => {
-      const componentConfig = baseComponents(fileName); // filename for Webpack to import the component
+    // will return an object of imported files with .vue extension
+    const baseComponents = import.meta.glob('../components/base/*.vue', {
+      eager: true, // load the modules immeadiately
+    })
+
+    Object.entries(baseComponents).forEach(([path, module]) => {
       // format the name of the component in PascalCase using lodash
-      const componentName = _.upperFirst(
-        // replace ./ inside the string to '' and replace .vue to '' (removing from it)
-        _.camelCase(fileName.replace(/^\.\//, '').replace(/\.\w+$/, ''))
-      );
-      // prefixing the component and checking if the default property holds the config options
-      app.component(`Base${componentName}`, componentConfig.default || componentConfig)
-    });
-  },
-};
+      const componentName = upperFirst(
+        camelCase(
+          path
+            .split('/')
+            .pop()
+            .replace(/\.\w+$/, "") // replace .vue inside the string to '' (removing from it)
+        )
+      )
+      // prefixing and registering the component
+      app.component(`Base${componentName}`, module.default)
+    })
+  }
+}
 
 // This file will automatically register components defined in the /components/base directory

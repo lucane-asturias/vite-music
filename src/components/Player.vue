@@ -6,7 +6,7 @@
       <div class="float-left w-7 h-7 leading-3">
         <button type="button" @click.prevent="toggleAudio">
           <i class="fa text-gray-500 text-xl"
-            :class="{ 'fa-play': !playing, 'fa-pause': playing }"></i>
+            :class="{ 'fa-play': !isPlaying, 'fa-pause': isPlaying }"></i>
         </button>
       </div>
       <!-- Current Position -->
@@ -24,7 +24,7 @@
         <span class="block w-full h-2 rounded m-1 mt-2 bg-gray-200 relative cursor-pointer"
           @click.prevent="updateSeek($event)">
           <!-- Player Ball -->
-          <span class="absolute top-neg-9 text-gray-800 text-lg" 
+          <span class="absolute top-neg-9 -ml-1 text-gray-800 text-lg" 
             :style="{ left: playerProgress }">
             <i class="fas fa-circle"></i>
           </span>
@@ -50,7 +50,7 @@
 
   // destructuring while keeping reactivity
   const { 
-    playing, 
+    isPlaying, 
     seek, 
     duration, 
     playerProgress, 

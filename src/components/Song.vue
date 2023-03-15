@@ -15,7 +15,8 @@
 	        <!-- Song Info -->
 	        <div class="text-3xl font-bold">Song Title: {{ song.modified_name }}</div>
 	        <div>{{ song.genre }} - いいわけは地獄できく</div>
-	        <div class="song-price">{{ n(1, 'currency', 'zh') }}</div>
+	        <!-- <div class="song-price">{{ n(1, 'currency', 'zh') }}</div> -->
+          <div class="song-price">{{ n(20, 'currency', locale.value) }}</div>
 	      </div>
 	    </div>
 	  </section>
@@ -68,131 +69,144 @@
 	    </li>
 	  </ul>
 	</main>
-</template> 
+</template>
 
-<script setup>
+<script>
   import { ref, reactive, computed, onMounted, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
 
   import { auth, songsCollection, commentsCollection } from '@/includes/firebase'
   import { useAuthStore } from '@/stores/authStore'
+  import { usePlayerStore } from '@/stores/playerStore'
 
+  export default {
+    setup() {
+      const route = useRoute()
+      const router = useRouter()
+      const { n, t, locale } = useI18n({ useScope: 'global' })
 
-  const route = useRoute()
-  const router = useRouter()
-  const { n, t, locale } = useI18n({ useScope: 'global' })
+      const authStore = useAuthStore()
+      const playerStore = usePlayerStore()
 
-  const authStore = useAuthStore()
-  const schema = reactive({ comment: 'required|min:3' })
+      const schema = reactive({ comment: 'required|min:3' })
 
-  const song = ref({})
-  const comments = ref([])
-  const comment_in_submission = ref(false)
-  const comment_show_alert = ref(false)
-  const comment_alert_color = ref('bg-blue-500')
-  const comment_alert_message = ref('Please wait! Your comment is being submitted!')
+      const song = ref({})
+      const comments = ref([])
+      const comment_in_submission = ref(false)
+      const comment_show_alert = ref(false)
+      const comment_alert_color = ref('bg-blue-500')
+      const comment_alert_message = ref('Please wait! Your comment is being submitted!')
 
-  const sortSong = ref('1') // indicate that the order should be - by default - latest to oldest
+      const sortSong = ref('1') // indicate that the order should be - by default - latest to oldest
 
-  const isPlaying = computed(() => authStore.isPlaying)
-  const isUserLoggedIn = computed(() => authStore.userLoggedIn)
+      const isPlaying = computed(() => playerStore.isPlaying)
+      const isUserLoggedIn = computed(() => authStore.userLoggedIn)
 
-  const sortedComments = computed(() => {
-		// creating a new copy of the original array with slice and sorting it
-		return comments.value.slice().sort((a, b) => {
-			// if '1' sort in descending order (latest to oldest)
-			if (sortSong.value === '1') {
-				return new Date(b.datePosted) - new Date(a.datePosted)
-			}
-			// ascending order (oldest to latest)
-			return new Date(a.datePosted) - new Date(b.datePosted)
-		})
-  })
+      const sortedComments = computed(() => {
+    		// creating a new copy of the original array with slice and sorting it
+    		return comments.value.slice().sort((a, b) => {
+    			// if '1' sort in descending order (latest to oldest)
+    			if (sortSong.value === '1') {
+    				return new Date(b.datePosted) - new Date(a.datePosted)
+    			}
+    			// ascending order (oldest to latest)
+    			return new Date(a.datePosted) - new Date(b.datePosted)
+    		})
+      })
 
-	// destructuring reset from context (optional argument which contains methods related to the form)
-	const addComment = async (values, { resetForm }) => {
-		comment_in_submission.value = true
-		comment_show_alert.value = true
-		comment_alert_color.value = 'bg-blue-500'
-		comment_alert_message.value = 'Please wait! Your comment is being submitted!'
+      const newSong = (song) => playerStore.newSong(song)
 
-    if (locale.value === 'pt') {
-      comment_alert_message.value = 'Por favor, espere! O seu comentário está sendo enviado.'
-    } else if (locale.value === 'zh') {
-      comment_alert_message.value = '请等待! 您的评论正在提交中!'
-    } else if (locale.value === 'ja') {
-      comment_alert_message.value = 'お待ちください！ コメントを送信中です。'
-    } else {
-      comment_alert_message.value = 'Please wait! Your comment is being submitted!'
+    	// destructuring reset from context (optional argument which contains methods related to the form)
+    	const addComment = async (values, { resetForm }) => {
+    		comment_in_submission.value = true
+    		comment_show_alert.value = true
+    		comment_alert_color.value = 'bg-blue-500'
+    		comment_alert_message.value = 'Please wait! Your comment is being submitted!'
+
+        if (locale.value === 'pt') {
+          comment_alert_message.value = 'Por favor, espere! O seu comentário está sendo enviado.'
+        } else if (locale.value === 'zh') {
+          comment_alert_message.value = '请等待! 您的评论正在提交中!'
+        } else if (locale.value === 'ja') {
+          comment_alert_message.value = 'お待ちください！ コメントを送信中です。'
+        } else {
+          comment_alert_message.value = 'Please wait! Your comment is being submitted!'
+        }
+        
+    		const commentObj = {
+          content: values.comment,
+          datePosted: new Date().toString(),
+          name: auth.currentUser.displayName,
+          songID: route.params.id,
+          uid: auth.currentUser.uid,
+    		}
+
+    		await commentsCollection.add(commentObj)
+
+    		song.value.comment_count += 1 // increment
+    		await songsCollection.doc(route.params.id).update({
+    			comment_count: song.value.comment_count,
+    		})
+
+    		getComments() // update comment list w/ newly added comment
+
+    		comment_in_submission.value = false
+    		comment_alert_color.value = 'bg-green-500'
+    		comment_alert_message.value = 'Comment added!'
+
+    		resetForm() // reset the values in the form to their original values (empty)
+    	}
+
+    	const getComments = async () => {
+    		// retrieve id of the song based on the segment param
+    		const snapshots = await commentsCollection.where('songID', '==', route.params.id).get()
+
+    		comments.value = []
+
+    		snapshots.forEach((document) => {
+    			comments.value.push({
+    				docID: document.id,
+    				...document.data(),
+    			})
+    		})
+    	}
+
+      watch(() => sortSong.value, (newVal) => {
+        // prevent the watcher from updating the route to avoid visiting/pushing to the same url
+        if (newVal === route.query.sort) return
+        // add query parameters to the current URL
+        router.push({
+          query: {
+            sort: newVal
+          }
+        })
+      })
+
+      return { n, t, locale, schema, song, comments, comment_in_submission, comment_show_alert, comment_alert_color, 
+        comment_alert_message, sortSong, isPlaying, isUserLoggedIn, sortedComments, getComments, addComment, newSong }
+
+    },
+    // Use beforeRouterEnter to make perceived performance uniform in case of slow connection
+    async beforeRouteEnter(to, from, next) {
+      // Get the specific doc from songs collection based on the route parameter id
+      const docSnapshot = await songsCollection.doc(to.params.id).get()
+
+      next((vm) => {
+        // Accessing the components data via the VM parameter
+        if (!docSnapshot.exists) { // If the document is not in the collection
+          vm.$router.push({ name: 'home' })
+          return // prevent this if block to running further
+        }
+
+        const { sort } = vm.$route.query
+        vm.sortSong = sort === '1' || sort === '2' ? sort : '1' // Checking if the value is valid
+
+        vm.song = docSnapshot.data()
+        vm.getComments() 
+      })
     }
-    
-		const commentObj = {
-      content: values.comment,
-      datePosted: new Date().toString(),
-      name: auth.currentUser.displayName,
-      songID: route.params.id,
-      uid: auth.currentUser.uid,
-		}
-
-		await commentsCollection.add(commentObj)
-
-		song.value.comment_count += 1 // increment
-		await songsCollection.doc(route.params.id).update({
-			comment_count: song.value.comment_count,
-		})
-
-		getComments() // update comment list w/ newly added comment
-
-		comment_in_submission.value = false
-		comment_alert_color.value = 'bg-green-500'
-		comment_alert_message.value = 'Comment added!'
-
-		resetForm() // reset the values in the form to their original values (empty)
-	}
-
-	const getComments = async () => {
-		// retrieve id of the song based on the segment param
-		const snapshots = await commentsCollection.where('songID', '==', route.params.id).get()
-
-		comments.value = []
-
-		snapshots.forEach((document) => {
-			comments.value.push({
-				docID: document.id,
-				...document.data(),
-			})
-		})
-    console.log(comments.value)
-	}
-
-  watch(() => sortSong.value, (newVal) => {
-    // prevent the watcher from updating the route to avoid visiting/pushing to the same url
-    if (newVal === route.query.sort) return
-    // add query parameters to the current URL
-    router.push({
-      query: {
-        sort: newVal
-      }
-    })
-  })
-
-  onMounted(async () => {
-    // get the specific doc from songs collection based on the route parameter id
-    const docSnapshot = await songsCollection.doc(route.params.id).get()
-
-    if (!docSnapshot.exists) { // if the document is not in the collection
-      router.push({ name: 'home' })
-      return // prevent this if block to running further
-    }
-
-    const { sort } = route.query
-    sortSong.value = sort === '1' || sort === '2' ? sort : '1' // checking if the value is valid
-
-    song.value = docSnapshot.data()
-    console.log(song.value)
-    getComments()
-  })
+  }
 </script>
 
 <style lang="css" scoped>
