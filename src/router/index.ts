@@ -1,15 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import Home from '@/views/Home.vue'
-// import About from '@/views/About.vue'
-// import Manage from '@/views/Manage.vue'
-// import Song from '@/components/Song.vue'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/modules/auth/store/authStore'
 
-// dynamically load component when its needed, which will proceed to load the chunk file
+// dynamically load component when its needed, which will load a chunk file
 const Home = () => import('@/views/Home.vue')
+const Song = () => import('@/views/Song.vue') 
 const About = () => import('@/views/About.vue')
-const Manage = () => import(/* webpackChunkName: 'groupedChunk' */'@/views/Manage.vue') 
-const Song = () => import(/* webpackChunkName: 'groupedChunk' */'@/components/Song.vue') 
+const Manage = () => import('@/modules/manage/views/Manage.vue') 
 
 const routes = [
   {
@@ -28,7 +24,7 @@ const routes = [
   },
   {
     path: '/manage',
-    // alias: '/manage', // additional path
+    // alias: '/manage-music', // additional path
     name: 'manage',
     component: Manage,
     // beforeEnter(to, from, next) {
@@ -36,14 +32,13 @@ const routes = [
     //   next();
     // },
     meta: {
-      // weather a route requires authentication
-      requiresAuth: true,
+      requiresAuth: true, // weather a route requires authentication
     }
   },
-  {
-    path: '/manage',
-    redirect: { name: 'manage' },
-  },
+  // {
+  //   path: '/manage-music',
+  //   redirect: { name: 'manage' },
+  // },
   {
     name: 'song',
     path: '/song/:id',

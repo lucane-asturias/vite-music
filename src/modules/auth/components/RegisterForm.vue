@@ -88,7 +88,7 @@
 <script setup>
   import { ref, reactive } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useAuthStore } from '@/stores/authStore'
+  import { useAuthStore } from '../store/authStore'
 
   const authStore = useAuthStore()
 

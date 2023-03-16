@@ -45,7 +45,7 @@
 <script setup>
   import { ref, onMounted, onBeforeUnmount } from 'vue'
   import { songsCollection } from '@/includes/firebase'
-  import SongItem from '@/components/SongItem.vue'
+  import SongItem from '../components/SongItem.vue'
 
   const maxPerPage = 3
   const songs = ref([])

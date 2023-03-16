@@ -33,7 +33,7 @@
   import { ref, reactive } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { auth } from '@/includes/firebase'
-  import { useAuthStore } from '@/stores/authStore'
+  import { useAuthStore } from '../store/authStore'
 
   const authStore = useAuthStore()
   const { locale } = useI18n({ useScope: 'global' })

@@ -1,8 +1,8 @@
 <template>
-  <!-- Header -->
+
   <app-header />
-  <!-- This component will be replaced with the correct component associated with the path. The view router
-  will automatically know which component to load based on route records created in the router -->
+
+  <!-- will be replaced and loaded with the correct component based on route records -->
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
       <!-- will render whatever component is provided by the router view -->
@@ -18,10 +18,11 @@
 
 <script setup>
   import { onMounted } from 'vue'
+  import { useAuthStore } from '@/components/auth/store/authStore'
+  
   import AppHeader from '@/components/Header.vue'
-  import AuthModal from '@/components/Auth.vue'
-  import AppPlayer from '@/components/Player.vue'
-  import { useAuthStore } from '@/stores/authStore'
+  import AuthModal from '@/modules/auth/views/Auth.vue'
+  import AppPlayer from '@/views/Player.vue'
 
   const authStore = useAuthStore()
 

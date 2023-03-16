@@ -44,7 +44,7 @@
 <script setup>
   import { computed } from 'vue'
   import { storeToRefs } from 'pinia'
-  import { usePlayerStore } from '@/stores/playerStore'
+  import { usePlayerStore } from '@/store/playerStore'
 
   const playerStore = usePlayerStore()
 

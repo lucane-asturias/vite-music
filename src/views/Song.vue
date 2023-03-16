@@ -57,12 +57,15 @@
 	  </section>
 	  <!-- Comments -->
 	  <ul class="container mx-auto">
-	    <li class="comment p-6 bg-gray-50 border border-gray-200" v-for="comment in sortedComments" 
-	    	:key="comment.docID">
+	    <li 
+        class="comment p-6 bg-gray-50 border border-gray-200" 
+        v-for="comment in sortedComments"
+	    	:key="comment.docID"
+      >
 	      <!-- Comment Author -->
-	      	<div class="mb-5">
-	        <div class="font-bold">{{ comment.name }}</div>
-	        <time>{{ comment.datePosted }}</time>
+      	<div class="mb-5">
+          <div class="font-bold">{{ comment.name }}</div>
+          <time>{{ comment.datePosted }}</time>
 	      </div>
 
 	      <p>{{ comment.content }}</p>
@@ -77,8 +80,8 @@
   import { useI18n } from 'vue-i18n'
 
   import { auth, songsCollection, commentsCollection } from '@/includes/firebase'
-  import { useAuthStore } from '@/stores/authStore'
-  import { usePlayerStore } from '@/stores/playerStore'
+  import { useAuthStore } from '@/modules/auth/store/authStore'
+  import { usePlayerStore } from '@/store/playerStore'
 
   export default {
     setup() {

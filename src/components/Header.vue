@@ -55,7 +55,7 @@
   import { computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { useAuthStore } from '@/stores/authStore'
+  import { useAuthStore } from '@/modules/auth/store/authStore'
   import { setLocale } from '@vee-validate/i18n'
   
   const route = useRoute()

@@ -28,10 +28,10 @@
   import { ref, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { onBeforeRouteLeave } from 'vue-router'
-  
-  import AppUpload from '@/components/Upload.vue'
-  import CompositionItem from '@/components/CompositionItem.vue'
   import { songsCollection, auth } from '@/includes/firebase'
+  
+  import AppUpload from '../components/Upload.vue'
+  import CompositionItem from '../components/CompositionItem.vue'
 
   const { locale } = useI18n({ useScope: 'global' })
 
