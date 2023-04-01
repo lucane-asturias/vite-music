@@ -3,11 +3,11 @@ import { useAuthStore } from '@/modules/auth/store/authStore'
 
 // dynamically load component when its needed, which will load a chunk file
 const Home = () => import('@/views/Home.vue')
-const Song = () => import('@/views/Song.vue') 
 const About = () => import('@/views/About.vue')
+const Song = () => import('@/modules/song/views/Song.vue') 
 const Manage = () => import('@/modules/manage/views/Manage.vue') 
 
-const routes = [
+export const routes = [
   {
     path: '/',
     name: 'home',
@@ -40,8 +40,8 @@ const routes = [
   //   redirect: { name: 'manage' },
   // },
   {
-    name: 'song',
     path: '/song/:id',
+    name: 'song',
     component: Song
   },
   {

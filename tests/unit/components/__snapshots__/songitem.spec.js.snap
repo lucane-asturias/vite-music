@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SongItem.vue > must match snapshot 1`] = `
+"<li class=\\"flex justify-between items-center p-3 pl-6 cursor-pointer transition duration-300 hover:bg-gray-50\\" data-v-c890381d=\\"\\">
+  <div data-v-c890381d=\\"\\">
+    <!-- /song/jW3N2QiCpFi4sply21oC -->
+    <router-link-stub to=\\"[object Object]\\" custom=\\"false\\" class=\\"font-bold block text-gray-600\\" data-v-c890381d=\\"\\"></router-link-stub><span class=\\"text-gray-500 text-sm\\" data-v-c890381d=\\"\\">song.artist test</span>
+  </div>
+  <div class=\\"text-gray-600 text-lg\\" data-v-c890381d=\\"\\">
+    <router-link-stub to=\\"[object Object]\\" custom=\\"true\\" data-v-c890381d=\\"\\"></router-link-stub>
+  </div>
+</li>
+<div class=\\"space\\" data-v-c890381d=\\"\\"></div>"
+`;
+
+exports[`Tests on the SongItem.vue component > must match snapshot 1`] = `
+"<li class=\\"flex justify-between items-center p-3 pl-6 cursor-pointer transition duration-300 hover:bg-gray-50\\" data-v-c890381d=\\"\\">
+  <div data-v-c890381d=\\"\\">
+    <!-- /song/jW3N2QiCpFi4sply21oC -->
+    <router-link-stub to=\\"[object Object]\\" custom=\\"false\\" class=\\"font-bold block text-gray-600\\" data-v-c890381d=\\"\\"></router-link-stub><span class=\\"text-gray-500 text-sm\\" data-v-c890381d=\\"\\">song.artist test</span>
+  </div>
+  <div class=\\"text-gray-600 text-lg\\" data-v-c890381d=\\"\\">
+    <router-link-stub to=\\"[object Object]\\" custom=\\"true\\" data-v-c890381d=\\"\\"></router-link-stub>
+  </div>
+</li>
+<div class=\\"space\\" data-v-c890381d=\\"\\"></div>"
+`;

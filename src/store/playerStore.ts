@@ -63,7 +63,7 @@ export const usePlayerStore = defineStore('playerStore', {
       this.song.on('seek', () => this.progress) // update player (timeline)
     },
     toggleAudio() {
-       // if the function not exists on the object
+       // if the function does not exists on the object
       if (!this.song.playing) return
 
       // if it is playing, pause the audio

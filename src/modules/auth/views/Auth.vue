@@ -59,8 +59,8 @@
   import { computed, ref } from 'vue'
   import { useAuthStore } from '../store/authStore'
 
-  import LoginForm from './components/LoginForm.vue'
-  import RegisterForm from './components/RegisterForm.vue'
+  import LoginForm from '../components/LoginForm.vue'
+  import RegisterForm from '../components/RegisterForm.vue'
 
   const authStore = useAuthStore()
 

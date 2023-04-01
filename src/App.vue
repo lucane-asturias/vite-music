@@ -18,7 +18,7 @@
 
 <script setup>
   import { onMounted } from 'vue'
-  import { useAuthStore } from '@/components/auth/store/authStore'
+  import { useAuthStore } from '@/modules/auth/store/authStore'
   
   import AppHeader from '@/components/Header.vue'
   import AuthModal from '@/modules/auth/views/Auth.vue'
