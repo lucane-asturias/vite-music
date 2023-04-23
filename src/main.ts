@@ -5,14 +5,11 @@ import { createPinia } from 'pinia'
 
 import VeeValidatePlugin from './includes/validation'
 import { auth } from './includes/firebase'
-import Icon from './directives/icon'
 import i18n from './includes/i18n'
-import GlobalComponents from './includes/_globals'
 import ProgressBar from './includes/progress-bar'
 import 'nprogress/nprogress.css'
 
 import './tailwind.css'
-import './assets/main.css'
 
 ProgressBar(router)
 
@@ -25,8 +22,6 @@ auth.onAuthStateChanged(() => {
     app.use(createPinia())
     app.use(router)
     app.use(VeeValidatePlugin)
-    app.use(GlobalComponents) // components registered globally
-    app.directive('icon', Icon)
 
     app.mount('#app')
   }
