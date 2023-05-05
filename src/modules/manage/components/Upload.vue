@@ -45,9 +45,9 @@
 
   import { useUpload } from '../composables/useUpload'
 
-  const { is_dragover, uploads, onUpload } = useUpload()
-
   const props = defineProps(['addSong'])
+  
+  const { is_dragover, uploads, onUpload } = useUpload(props.addSong)
 
   // cancelUploads() { // not using ref
   //   uploads.value.forEach((upload) => {

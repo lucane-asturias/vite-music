@@ -1,17 +1,9 @@
 import { ref } from 'vue'
 import { storage, auth, songsCollection } from '@/includes/firebase'
 
-interface PropsType {
-  song: object
-  index: Number
-  removeSong: Function
-  updateSong: Function
-  updateUnsavedFlag?: Function
-}
-
 const { locale } = useI18n({ useScope: 'global' })
 
-export const useUpload = (props: PropsType) => {
+export const useUpload = (addSong) => {
   const is_dragover = ref(false)
   const uploads = ref([])
 
@@ -83,7 +75,7 @@ export const useUpload = (props: PropsType) => {
         const songRef = await songsCollection.add(song)
         const songSnapShot = await songRef.get() // returns a snapshot
 
-        props.addSong(songSnapShot)
+        addSong(songSnapShot)
 
         uploads.value[uploadIndex].color = 'bg-green-400'
         uploads.value[uploadIndex].icon = 'fas fa-check'
