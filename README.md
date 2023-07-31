@@ -2,10 +2,10 @@
 
 ## Vite Example Music
 
-A practical application created together with professor Luiz Ramirez, from his respective Vue course.
+A practical application created together with professor Luiz Ramirez, from his Vue course.
 It's my second time redoing this project, to solidify the concepts that were taught.
 
-In this project I developed a conceptual application that manages music, which utilizes a few of several utilities:
+In this project I developed a conceptual application that manages music, which utilizes a few of utilities:
 
 - Howler — js audio library used to play the music
 - Tailwind — now I'm used to it
